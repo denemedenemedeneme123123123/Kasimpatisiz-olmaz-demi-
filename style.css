@@ -1,0 +1,162 @@
+:root {
+  --bg-top: #0b0418;
+  --bg-mid: #2a0f4a;
+  --bg-bottom: #4a1942;
+  --pink: #ff7ab8;
+  --pink-soft: #ffb3d6;
+  --text: #fbeaf4;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 60%, var(--bg-bottom) 100%);
+  color: var(--text);
+  font-family: Georgia, 'Times New Roman', serif;
+  touch-action: manipulation;
+}
+
+#sky, #particles, .side { position: fixed; inset: 0; pointer-events: none; }
+#sky { z-index: 0; }
+#particles { z-index: 1; }
+.side { z-index: 2; }
+
+.star {
+  position: absolute;
+  background: #fff;
+  border-radius: 50%;
+  opacity: .2;
+  animation: twinkle var(--dur, 3s) ease-in-out var(--delay, 0s) infinite;
+}
+@keyframes twinkle { 50% { opacity: var(--peak, .9); } }
+
+#stage {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: calc(env(safe-area-inset-bottom) + 28px);
+}
+#bouquet {
+  width: min(100vw, 520px);
+  height: min(72dvh, 100vw * 1.5);
+  overflow: visible;
+  touch-action: manipulation;
+}
+
+/* Açılış ekranı */
+#intro {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  background: radial-gradient(circle at 50% 45%, rgba(74,25,66,.55), rgba(11,4,24,.96) 70%);
+  cursor: pointer;
+  transition: opacity .9s ease, visibility .9s;
+}
+#intro.gone { opacity: 0; visibility: hidden; pointer-events: none; }
+.intro-heart {
+  width: 72px;
+  height: 72px;
+  color: var(--pink);
+  filter: drop-shadow(0 0 14px var(--pink));
+  animation: beat 1.4s ease-in-out infinite;
+}
+@keyframes beat { 0%,100% { transform: scale(1); } 15% { transform: scale(1.18); } 30% { transform: scale(1); } 45% { transform: scale(1.12); } }
+#intro-text { font-size: 1.15rem; letter-spacing: .3em; color: var(--pink-soft); opacity: .85; }
+
+/* Mektup */
+#letter[hidden] { display: none; }
+
+#letter {
+  position: fixed;
+  inset: 0;
+  z-index: 15;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(11,4,24,.55);
+  padding: 0 12px calc(env(safe-area-inset-bottom) + 12px);
+}
+.paper {
+  width: min(100%, 460px);
+  max-height: 70dvh;
+  overflow-y: auto;
+  padding: 24px 22px 18px;
+  border-radius: 20px;
+  background: rgba(30,12,52,.92);
+  border: 1px solid rgba(255,122,184,.35);
+  box-shadow: 0 0 40px rgba(255,122,184,.25);
+  animation: rise .5s ease-out;
+}
+@keyframes rise { from { transform: translateY(40px); opacity: 0; } }
+#letter-text {
+  white-space: pre-wrap;
+  font: inherit;
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--text);
+  min-height: 7em;
+}
+#letter-close {
+  display: block;
+  margin: 16px auto 0;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 24px;
+  border: 1px solid rgba(255,122,184,.5);
+  border-radius: 22px;
+  background: transparent;
+  color: var(--pink-soft);
+  font: inherit;
+  cursor: pointer;
+}
+
+/* Küçük saf CSS kalpler */
+.mini-heart {
+  position: fixed;
+  z-index: 2;
+  width: var(--s, 10px);
+  height: var(--s, 10px);
+  background: var(--c, #ff7ab8);
+  transform: rotate(-45deg);
+  pointer-events: none;
+  opacity: 0;
+  filter: drop-shadow(0 0 4px var(--c, #ff7ab8));
+}
+.mini-heart::before, .mini-heart::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: inherit;
+  border-radius: 50%;
+}
+.mini-heart::before { top: -50%; left: 0; }
+.mini-heart::after { left: 50%; top: 0; }
+
+/* CDN yüklenmezse */
+#fallback { display: none; position: fixed; z-index: 30; left: 0; right: 0; top: 60%; text-align: center; color: var(--pink-soft); font-size: 1.2rem; }
+body.no-gsap #fallback { display: block; }
+body.no-gsap #intro { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .star, .intro-heart { animation: none; }
+  #intro { transition-duration: .2s; }
+}

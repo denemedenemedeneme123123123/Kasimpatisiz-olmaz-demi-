@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0418">
+<title>Sana Özel</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="sky"></div>
+<div id="particles"></div>
+<div id="side-left" class="side" aria-hidden="true"></div>
+<div id="side-right" class="side" aria-hidden="true"></div>
+
+<main id="stage">
+  <svg id="bouquet" viewBox="0 0 400 600" preserveAspectRatio="xMidYMax meet" role="img" aria-label="Çiçek buketi"></svg>
+</main>
+
+<section id="letter" hidden>
+  <div class="paper">
+    <pre id="letter-text"></pre>
+    <button id="letter-close" type="button">Kapat</button>
+  </div>
+</section>
+
+<div id="intro">
+  <svg class="intro-heart" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 21s-7.5-4.6-9.6-9.2C.8 8.3 2.6 4.5 6.3 4.5c2.1 0 3.9 1.2 5.7 3.4 1.8-2.2 3.6-3.4 5.7-3.4 3.7 0 5.5 3.8 3.9 7.3C19.500 16.400 12 21 12 21z"/></svg>
+  <p id="intro-text">dokun</p>
+</div>
+
+<p id="fallback">Sayfayı yenile ♥</p>
+<noscript><p style="color:#fff;text-align:center;margin-top:40vh">Bu sayfa için JavaScript gerekli.</p></noscript>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tsparticles/3.5.0/tsparticles.bundle.min.js"></script>
+<script src="content.js"></script>
+<script src="app.js"></script>
+<script src="bouquet.js"></script>
+<script src="hearts.js"></script>
+<script src="interact.js"></script>
+</body>
+</html>
