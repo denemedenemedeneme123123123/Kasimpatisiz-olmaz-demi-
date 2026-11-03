@@ -2,9 +2,9 @@
 window.ASK_CONTENT = {
   intro: "dokun",
   letter: [
-    "Hala Sendeyim",
+    "BIRAKAMIYORUM BIRAKAMIYORUM",
     "",
-    "Bahsettigim Site Buydu",
-    "Dahada Rezil oluyoruz ama neyse"
+    "baya biktinda soyle dusun",
+    "kasimpati tiktoklarini izlicen en iyisi senin olmasinmi????"
   ]
 };
