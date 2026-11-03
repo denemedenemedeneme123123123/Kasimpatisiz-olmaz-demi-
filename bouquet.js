@@ -20,120 +20,45 @@
            'C' + W * 1.05 + ' ' + -L * t + ' ' + W + ' ' + -L * 0.15 + ' 0 0Z';
   }
 
-  // n adet taç yaprağını merkez etrafında halka olarak ekler, yaprak elemanlarını döndürür.
-  function ring(parent, n, L, W, fill, offset, stroke, round) {
-    const out = [];
-    for (let i = 0; i < n; i++) {
-      const a = offset + (360 / n) * i + (rnd() - 0.5) * 6;
-      const w = el('g', { transform: 'rotate(' + a.toFixed(1) + ')' }, parent);
-      const p = el('path', { d: petalPath(L, W, round), fill: fill, stroke: stroke || 'none', 'stroke-width': 0.8, class: 'petal' }, w);
-      out.push(p);
-    }
-    return out;
-  }
-
   function halo(parent, r, fill) {
     return el('circle', { r: r, fill: fill || 'url(#halo)', class: 'halo' }, parent);
   }
 
   // 5 tonlu paletler: en açık -> en koyu. Her halka için ayrı radyal gradyan üretilir.
-  const ROSE = {
-    main: ['#ff8ab8', '#ff5c9a', '#e82a76', '#b4125a', '#730a3a'],
-    soft: ['#ffe0ec', '#ffbfd8', '#ff98bf', '#e8689c', '#b03d74'],
-    lilac: ['#f1d9ff', '#d9a8ff', '#bb7aef', '#8f4cc7', '#5a2a8f']
+  const MUM = {
+    pink: ['#ffd6ea', '#ff9fcb', '#ff5fa8', '#d92b7d', '#8f1050'],
+    white: ['#ffffff', '#fdf3fa', '#f2dcec', '#d9b4cd', '#a9799c'],
+    gold: ['#fff1b0', '#ffdc5e', '#ffbf1f', '#e69500', '#a85d00'],
+    orange: ['#ffe0b8', '#ffb86b', '#ff8a2a', '#d95a0b', '#8c3004'],
+    lilac: ['#f1d9ff', '#d9a8ff', '#bb7aef', '#8f4cc7', '#5a2a8f'],
+    wine: ['#ffb3c8', '#ff6d94', '#d62a5e', '#9c1240', '#5c0626']
   };
-
-  // Geniş, üstü hafif çukur gül yaprağı (taban 0,0; simetrik).
-  function rosePath(L, W) {
-    return 'M0 0C' + -W * 0.55 + ' ' + -L * 0.1 + ' ' + -W * 1.05 + ' ' + -L * 0.45 + ' ' + -W * 0.9 + ' ' + -L * 0.8 +
-           'C' + -W * 0.8 + ' ' + -L * 1.02 + ' ' + -W * 0.3 + ' ' + -L * 1.05 + ' 0 ' + -L * 0.93 +
-           'C' + W * 0.3 + ' ' + -L * 1.05 + ' ' + W * 0.8 + ' ' + -L * 1.02 + ' ' + W * 0.9 + ' ' + -L * 0.8 +
-           'C' + W * 1.05 + ' ' + -L * 0.45 + ' ' + W * 0.55 + ' ' + -L * 0.1 + ' 0 0Z';
-  }
-  function roseRim(L, W) {
-    return 'M' + -W * 0.9 + ' ' + -L * 0.8 + 'C' + -W * 0.8 + ' ' + -L * 1.02 + ' ' + -W * 0.3 + ' ' + -L * 1.05 + ' 0 ' + -L * 0.93 +
-           'C' + W * 0.3 + ' ' + -L * 1.05 + ' ' + W * 0.8 + ' ' + -L * 1.02 + ' ' + W * 0.9 + ' ' + -L * 0.8;
-  }
-
-  function rosePetal(parent, L, W, fill, angle) {
-    const w = el('g', { transform: 'rotate(' + angle.toFixed(1) + ')' }, parent);
-    const p = el('g', { class: 'petal' }, w);
-    el('path', { d: rosePath(L, W), fill: fill, stroke: 'rgba(70,0,35,.4)', 'stroke-width': 0.7 }, p);
-    el('path', { d: 'M0 ' + -L * 0.2 + 'C' + -W * 0.12 + ' ' + -L * 0.5 + ' ' + -W * 0.1 + ' ' + -L * 0.75 + ' 0 ' + -L * 0.88, fill: 'none', stroke: 'rgba(60,0,30,.28)', 'stroke-width': 0.8 }, p);
-    el('path', { d: roseRim(L, W), fill: 'none', stroke: 'rgba(255,255,255,.42)', 'stroke-width': 1.1, 'stroke-linecap': 'round' }, p);
-    return p;
-  }
 
   function sparkle(parent, x, y, k) {
     const w = el('g', { transform: 'translate(' + x + ' ' + y + ') scale(' + k + ')' }, parent);
     el('path', { d: 'M0 -6L1.4 -1.4L6 0L1.4 1.4L0 6L-1.4 1.4L-6 0L-1.4 -1.4Z', fill: '#fff', class: 'glint', opacity: 0 }, w);
   }
 
-  function drawRose(g, R, key) {
+  // Kasımpatı: dıştan içe kısalan, ince şerit taç yaprağı halkaları. Her halka tek öğe olarak açılır.
+  function drawMum(g, R, key) {
     halo(g, R * 1.8);
-    el('circle', { r: R * 1.02, fill: 'rgba(40,0,25,.38)' }, g); // derinlik gölgesi
-    const petals = [];
+    el('circle', { r: R * 1.0, fill: 'rgba(40,0,25,.32)' }, g); // derinlik gölgesi
+    const rings = [];
     // [adet, uzunluk, genişlik, başlangıç açısı]
-    [[8, 1.0, 0.52, 0], [7, 0.8, 0.46, 22], [6, 0.6, 0.4, 11], [5, 0.42, 0.32, 30], [3, 0.24, 0.2, 50]].forEach(function (c, r) {
+    [[20, 1.0, 0.12, 0], [18, 0.86, 0.12, 9], [16, 0.72, 0.11, 4], [13, 0.57, 0.1, 14], [10, 0.4, 0.09, 22], [7, 0.24, 0.08, 36]].forEach(function (c, r) {
+      const ringG = el('g', { class: 'petal' }, g);
       for (let i = 0; i < c[0]; i++) {
         const a = c[3] + (360 / c[0]) * i + (rnd() - 0.5) * 8;
-        petals.push(rosePetal(g, R * c[1], R * c[2], 'url(#rg-' + key + '-' + r + ')', a));
+        const w = el('g', { transform: 'rotate(' + a.toFixed(1) + ')' }, ringG);
+        el('path', { d: petalPath(R * c[1], R * c[2], true), fill: 'url(#mg-' + key + '-' + Math.min(r, 4) + ')', stroke: 'rgba(70,0,35,.35)', 'stroke-width': 0.6 }, w);
+        el('path', { d: 'M0 ' + -R * c[1] * 0.15 + 'L0 ' + -R * c[1] * 0.85, fill: 'none', stroke: 'rgba(255,255,255,.35)', 'stroke-width': 0.7, 'stroke-linecap': 'round' }, w);
       }
+      rings.push(ringG);
     });
-    // merkezdeki sarmal
-    el('path', {
-      d: 'M0 0c' + R * 0.06 + ' ' + -R * 0.08 + ' ' + R * 0.14 + ' ' + -R * 0.02 + ' ' + R * 0.1 + ' ' + R * 0.08 +
-         's' + -R * 0.2 + ' ' + R * 0.1 + ' ' + -R * 0.24 + ' ' + -R * 0.06,
-      fill: 'none', stroke: 'rgba(255,220,235,.6)', 'stroke-width': 1.2, 'stroke-linecap': 'round'
-    }, g);
-    // çiy damlası ve parıltılar
-    el('circle', { cx: R * 0.22, cy: -R * 0.55, r: R * 0.075, fill: 'rgba(255,255,255,.28)', stroke: 'rgba(255,255,255,.75)', 'stroke-width': 0.8 }, g);
-    el('circle', { cx: R * 0.2, cy: -R * 0.58, r: R * 0.025, fill: '#fff' }, g);
+    el('circle', { r: R * 0.09, fill: '#ffd24d', stroke: '#ff9f2e', 'stroke-width': 0.8 }, g);
     sparkle(g, -R * 0.38, -R * 0.52, R / 40);
     sparkle(g, R * 0.5, -R * 0.2, R / 50);
-    sparkle(g, R * 0.05, -R * 0.82, R / 55);
-    return petals;
-  }
-
-  function drawTulip(g, S, pal) {
-    halo(g, S * 1.5);
-    g.setAttribute('data-shift', 1);
-    const base = el('g', { transform: 'translate(0 ' + S * 0.55 + ')' }, g);
-    const petals = [];
-    [[-16, pal[0]], [16, pal[0]], [0, pal[1]]].forEach(function (d, i) {
-      const w = el('g', { transform: 'rotate(' + d[0] + ')' }, base);
-      petals.push(el('path', {
-        d: 'M0 0C' + -S * 0.45 + ' ' + -S * 0.2 + ' ' + -S * 0.5 + ' ' + -S * 0.85 + ' 0 ' + -S * 1.15 +
-           'C' + S * 0.5 + ' ' + -S * 0.85 + ' ' + S * 0.45 + ' ' + -S * 0.2 + ' 0 0Z',
-        fill: i < 2 ? d[1] : pal[2], stroke: 'rgba(90,0,60,.35)', 'stroke-width': 0.8, class: 'petal'
-      }, w));
-    });
-    return petals;
-  }
-
-  function drawDaisy(g, R) {
-    halo(g, R * 1.6, 'url(#haloWhite)');
-    const petals = ring(g, 14, R, R * 0.2, '#fff6fb', 0, 'rgba(255,170,210,.6)', false);
-    el('circle', { r: R * 0.3, fill: '#ffd24d', stroke: '#ff9f2e', 'stroke-width': 1 }, g);
-    return petals;
-  }
-
-  function drawLavender(g) {
-    halo(g, 40, 'url(#haloViolet)');
-    const petals = [];
-    for (let i = 0; i < 11; i++) {
-      const y = -i * 6.4;
-      const s = 1 - i * 0.045;
-      [-1, 1].forEach(function (side) {
-        petals.push(el('ellipse', {
-          cx: side * 4.5 * s, cy: y - (side > 0 ? 3 : 0), rx: 3.6 * s, ry: 6 * s,
-          transform: 'rotate(' + side * 22 + ' ' + side * 4.5 * s + ' ' + y + ')',
-          fill: i % 2 ? '#b79bff' : '#9f7cf5', class: 'petal'
-        }, g));
-      });
-    }
-    petals.push(el('ellipse', { cx: 0, cy: -72, rx: 3, ry: 6, fill: '#c8b0ff', class: 'petal' }, g));
-    return petals;
+    return rings;
   }
 
   function drawBaby(g) {
@@ -159,21 +84,21 @@
   const FLOWERS = [
     { kind: 'baby', x: 92, y: 150 }, { kind: 'baby', x: 310, y: 140 }, { kind: 'baby', x: 200, y: 72 },
     { kind: 'baby', x: 150, y: 96 }, { kind: 'baby', x: 252, y: 92 },
-    { kind: 'lavender', x: 52, y: 262 }, { kind: 'lavender', x: 350, y: 258 },
-    { kind: 'lavender', x: 100, y: 232 }, { kind: 'lavender', x: 300, y: 228 },
-    { kind: 'tulip', x: 142, y: 160, S: 46, pal: ['#ffd1e6', '#ff9fc9', '#e8579b'] },
-    { kind: 'tulip', x: 262, y: 142, S: 48, pal: ['#ffe9a8', '#ffc46b', '#ff9a4a'] },
-    { kind: 'daisy', x: 76, y: 344, R: 27 }, { kind: 'daisy', x: 326, y: 338, R: 27 }, { kind: 'daisy', x: 200, y: 352, R: 23 },
+    { kind: 'mum', x: 52, y: 262, R: 22, pal: 'white' }, { kind: 'mum', x: 350, y: 258, R: 22, pal: 'gold' },
+    { kind: 'mum', x: 100, y: 232, R: 24, pal: 'lilac' }, { kind: 'mum', x: 300, y: 228, R: 24, pal: 'orange' },
+    { kind: 'mum', x: 142, y: 160, R: 30, pal: 'wine' }, { kind: 'mum', x: 262, y: 142, R: 32, pal: 'gold' },
+    { kind: 'mum', x: 76, y: 344, R: 27, pal: 'white' }, { kind: 'mum', x: 326, y: 338, R: 27, pal: 'pink' },
+    { kind: 'mum', x: 200, y: 352, R: 23, pal: 'orange' },
     // sap bölgesini dolduranlar
     { kind: 'baby', x: 96, y: 414 }, { kind: 'baby', x: 306, y: 410 },
-    { kind: 'rose', x: 146, y: 384, R: 38, pal: 'main' },
-    { kind: 'rose', x: 256, y: 390, R: 40, pal: 'soft' },
-    { kind: 'rose', x: 118, y: 330, R: 30, pal: 'lilac' },
-    { kind: 'rose', x: 286, y: 334, R: 32, pal: 'main' },
-    { kind: 'rose', x: 200, y: 128, R: 30, pal: 'soft' },
-    { kind: 'rose', x: 125, y: 256, R: 40, pal: 'soft' },
-    { kind: 'rose', x: 282, y: 264, R: 42, pal: 'lilac' },
-    { kind: 'rose', x: 200, y: 214, R: 68, pal: 'main' }
+    { kind: 'mum', x: 146, y: 384, R: 38, pal: 'pink' },
+    { kind: 'mum', x: 256, y: 390, R: 40, pal: 'white' },
+    { kind: 'mum', x: 118, y: 330, R: 30, pal: 'lilac' },
+    { kind: 'mum', x: 286, y: 334, R: 32, pal: 'gold' },
+    { kind: 'mum', x: 200, y: 128, R: 30, pal: 'orange' },
+    { kind: 'mum', x: 125, y: 256, R: 40, pal: 'white' },
+    { kind: 'mum', x: 282, y: 264, R: 42, pal: 'lilac' },
+    { kind: 'mum', x: 200, y: 214, R: 68, pal: 'pink' }
   ];
 
   const HUB = { x: 200, y: 505 };
@@ -189,10 +114,10 @@
       el('stop', { offset: '0%', 'stop-color': h[1], 'stop-opacity': 0.5 }, g);
       el('stop', { offset: '100%', 'stop-color': h[1], 'stop-opacity': 0 }, g);
     });
-    Object.keys(ROSE).forEach(function (key) {
+    Object.keys(MUM).forEach(function (key) {
       for (let r = 0; r < 5; r++) {
-        const pal = ROSE[key];
-        const gr = el('radialGradient', { id: 'rg-' + key + '-' + r, cx: 0.5, cy: 1, r: 1, fx: 0.5, fy: 1 }, defs);
+        const pal = MUM[key];
+        const gr = el('radialGradient', { id: 'mg-' + key + '-' + r, cx: 0.5, cy: 1, r: 1, fx: 0.5, fy: 1 }, defs);
         el('stop', { offset: '0%', 'stop-color': pal[Math.min(r + 2, 4)] }, gr);
         el('stop', { offset: '55%', 'stop-color': pal[Math.min(r + 1, 4)] }, gr);
         el('stop', { offset: '100%', 'stop-color': pal[Math.min(r, 4)] }, gr);
@@ -220,10 +145,10 @@
 
     // sapları çiz
     FLOWERS.forEach(function (f) {
-      const endY = f.kind === 'lavender' ? f.y : f.kind === 'tulip' ? f.y + f.S * 0.55 : f.y + (f.R || 12) * 0.35;
+      const endY = f.y + (f.R || 12) * 0.35;
       const d = 'M' + HUB.x + ' ' + HUB.y +
         'C' + HUB.x + ' ' + (HUB.y - (HUB.y - endY) * 0.5) + ' ' + f.x + ' ' + (endY + (HUB.y - endY) * 0.4) + ' ' + f.x + ' ' + endY;
-      const w = f.kind === 'rose' ? 3.4 : f.kind === 'baby' ? 1.6 : 2.6;
+      const w = f.kind === 'mum' ? 3 : 1.6;
       parts.stems.push(el('path', {
         d: d, fill: 'none', stroke: '#3aa675', 'stroke-width': w, 'stroke-linecap': 'round'
       }, stemsG));
@@ -248,10 +173,7 @@
       const outer = el('g', { transform: 'translate(' + f.x + ' ' + f.y + ')' }, headsG);
       const head = el('g', { class: 'head ' + f.kind }, outer);
       let petals;
-      if (f.kind === 'rose') petals = drawRose(head, f.R, f.pal);
-      else if (f.kind === 'tulip') petals = drawTulip(head, f.S, f.pal);
-      else if (f.kind === 'daisy') petals = drawDaisy(head, f.R);
-      else if (f.kind === 'lavender') petals = drawLavender(head);
+      if (f.kind === 'mum') petals = drawMum(head, f.R, f.pal);
       else petals = drawBaby(head);
       parts.flowers.push({ el: head, petals: petals, kind: f.kind, cx: f.x, cy: f.y });
     });
@@ -315,7 +237,7 @@
     gsap.set(parts.leaves, { scale: 0, transformOrigin: '50% 100%' });
     parts.flowers.forEach(function (f) {
       gsap.set(f.el, { scale: 0.05, rotation: -50, opacity: 0, transformOrigin: '50% 50%' });
-      gsap.set(f.petals, { scale: 0.35, transformOrigin: '50% 100%' });
+      gsap.set(f.petals, { scale: 0.35, transformOrigin: f.kind === 'mum' ? '50% 50%' : '50% 100%' });
     });
     gsap.set(parts.ribbon, { y: -40, opacity: 0, transformOrigin: '50% 50%' });
     gsap.set(parts.note, { scale: 0, opacity: 0, svgOrigin: '228 440' });
@@ -372,7 +294,7 @@
     const live = new Set();
     let paused = false;
     const svg = parts.root.parentNode;
-    const droppers = parts.flowers.filter(function (f) { return f.kind === 'rose' || f.kind === 'tulip'; });
+    const droppers = parts.flowers.filter(function (f) { return f.kind === 'mum'; });
 
     function drop() {
       if (paused || live.size >= 6) return;
